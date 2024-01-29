@@ -86,3 +86,12 @@ if __name__ == '__main__':
         lex = lexer.tokenize(text)
         for token in lex:
             print(token)
+    while True:
+        try:
+            text = input('dlang > ')
+        except EOFError:
+            break
+        if text:
+            lex = lexer.tokenize(text)
+            for token in lex:
+                print(token)
