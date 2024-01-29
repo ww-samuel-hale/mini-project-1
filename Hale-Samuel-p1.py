@@ -81,11 +81,11 @@ class DLangLexer(Lexer):
 if __name__ == '__main__':
     lexer = DLangLexer()
     env = {}
-    with open('test.dlang', 'r') as file:  
-        text = file.read()
-        lex = lexer.tokenize(text)
-        for token in lex:
-            print(token)
+    # with open('test.dlang', 'r') as file:  
+    #     text = file.read()
+    #     lex = lexer.tokenize(text)
+    #     for token in lex:
+    #         print(token)
     while True:
         try:
             text = input('dlang > ')
