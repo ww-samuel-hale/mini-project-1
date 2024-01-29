@@ -2,8 +2,10 @@ from sly import Lexer
 
 class DLangLexer(Lexer):
     # Set of token names
-    # nothing, int, double, bool, string, class, interface, null, this, extends, implements, for, while, if, else, return, break, new, ArrayInstance, Output, InputInt, InputLine
-    tokens = { NOTHING, INT, DOUBLE_KEYWORD, BOOL, STRING_KEYWORD, CLASS, INTERFACE, NULL, THIS, EXTENDS, IMPLEMENTS, FOR, WHILE, IF, ELSE, RETURN, BREAK, NEW, ARRAYINSTANCE, OUTPUT, INPUTINT, INPUTLINE, ID, BOOLEAN, INTEGER, DOUBLE, STRING, COMMENT, PLUS, MINUS, TIMES, DIVIDE, MOD, LT, LE, GT, GE, EQ, EQEQ, NE, AND, OR, NOT, SEMI, COMMA, DOT, LBRACK, RBRACK, LPAREN, RPAREN, LBRACE, RBRACE }
+    tokens = { NOTHING, INT, DOUBLE_KEYWORD, BOOL, STRING_KEYWORD, CLASS, INTERFACE, NULL, THIS, EXTENDS, IMPLEMENTS, 
+              FOR, WHILE, IF, ELSE, RETURN, BREAK, NEW, ARRAYINSTANCE, OUTPUT, INPUTINT, INPUTLINE, ID, BOOLEAN, INTEGER, 
+              DOUBLE, STRING, COMMENT, PLUS, MINUS, TIMES, DIVIDE, MOD, LT, LE, GT, GE, EQ, EQEQ, NE, AND, OR, NOT, SEMI, 
+              COMMA, DOT, LBRACK, RBRACK, LPAREN, RPAREN, LBRACE, RBRACE }
 
     # String containing ignored characters
     ignore = ' \t'
@@ -79,14 +81,8 @@ class DLangLexer(Lexer):
 if __name__ == '__main__':
     lexer = DLangLexer()
     env = {}
-    while True:
-        try:
-            text = input('dlang > ')
-        except EOFError:
-            break
-        if text:
-            lex = lexer.tokenize(text)
-            for token in lex:
-                print(token)
-        else:
-            continue
+    with open('test.dlang', 'r') as file:  
+        text = file.read()
+        lex = lexer.tokenize(text)
+        for token in lex:
+            print(token)

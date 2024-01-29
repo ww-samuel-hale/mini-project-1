@@ -1,0 +1,89 @@
+hello
+
+ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJ
+ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJhello
+ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJ12345
+ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJ1234.22323
+ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJ1234.2323E+123
+
+""
+
+    " this is a string. Anything (for example,? $ #) except double qoutes can appear here."
+
+"
+This is a multiline string
+It is not accepted.
+"
+
+____varname
+____
+2323432
+
+121.1212
+123.
+1232.12321E33
+1212.212E+2
+2323.234342E-2342
+233.232e+23
+_sdfsd
+
+true
+True
+False
+
+TrueFalse
+
+for
+
+while
+
+new
+this
+
+class
+nothing
+break
+if
+else
+bool
+// singe line comment. anything i$ p0$$ible here
+
+/* 
+This 
+is 
+a 
+multi-line
+comment.
+Should be ignored.
+
+*/
+
+
+/*
+
+*/
+,
+.
+
+
+=
+==
+<=
+&&
+&
+?
+||
+!=
+!
+
+// check invalid doubles
+.4E7
+1.E5
+1.3E
+
+// Check empty string
+""
+
+// check identifiers again
+ABABABABABABABABABABABABABABABABABABABABABABABABABintxy
+ABABABABABABABABABABABABABABABABABABABABABABABABABintxy int
