@@ -6,7 +6,6 @@ import sys
 from sly import Lexer, Parser
 
 class DLangLexer(Lexer):
-    # Initialize the lexer with a symbol table
     def __init__(self):
         self.IDENTIFIERs = { }
 
@@ -69,7 +68,7 @@ class DLangParser(Parser):
     precedence = (
     ('left', '+', '-'),
     ('left', '*', '/', '%'),
-    ('right', 'UMINUS'),  # Unary minus operator
+    ('right', 'UMINUS'),  
     )
 
 
@@ -181,7 +180,10 @@ class DLangParser(Parser):
         
     @_(' "-" Expr %prec UMINUS')
     def NegExpr(self, p):
-        return -p.Expr
+        if p.Expr == None:
+            return 0
+        else:
+            return -p.Expr
         
     # Expr → ident = Expr | Ident | Constant | Call | ( Expr ) | Expr+Expr | Expr -Expr | Expr *Expr | Expr/Expr | Expr % Expr | - Expr | Expr < Expr | Expr <= Expr | Expr > Expr | Expr>= Expr | Expr==Expr | Expr!=Expr | Expr && Expr | Expr || Expr | !Expr | InputInt ( ) | InputLine ( )
     @_('IDENTIFIER "=" Expr',
