@@ -11,7 +11,7 @@ class DLangLexer(Lexer):
         self.IDENTIFIERs = { }
 
     # Define names of tokens
-    tokens = {LE, GE, EQ, NE, AND, OR, INT, DOUBLE, STRING, IDENTIFIER, NOTHING, INTK, DOUBLEK, BOOL, BOOLK, STRINGK, INTERFACE, NULL, FOR, WHILE, IF, ELSE, RETURN, BREAK, ARRAYINSTANCE, OUTPUT, INPUTINT, INPUTLINE}
+    tokens = {NOT, LE, GE, EQ, NE, AND, OR, INT, DOUBLE, STRING, IDENTIFIER, NOTHING, INTK, DOUBLEK, BOOL, BOOLK, STRINGK, INTERFACE, NULL, FOR, WHILE, IF, ELSE, RETURN, BREAK, ARRAYINSTANCE, OUTPUT, INPUTINT, INPUTLINE}
     
     # Single-character literals can be recognized without token names
     # If you use separate tokens for each literal, that is fine too
@@ -33,6 +33,7 @@ class DLangLexer(Lexer):
     GE = r'>='
     AND = r'&&' 
     OR =  r'\|\|'
+    NOT = r'!'
     IDENTIFIER = r'[a-zA-Z_][a-zA-Z0-9_]{0,49}'
 
     # IDENTIFIER lexemes overlap with keywords.
@@ -64,6 +65,13 @@ class DLangLexer(Lexer):
 class DLangParser(Parser):
 
     tokens = DLangLexer.tokens
+    
+    precedence = (
+    ('left', '+', '-'),
+    ('left', '*', '/', '%'),
+    ('right', 'UMINUS'),  # Unary minus operator
+    )
+
 
     def __init__(self):
         self.IDENTIFIERs = { }
@@ -85,6 +93,16 @@ class DLangParser(Parser):
     @_('VariableDecl')
     def Decl(self, p):
         return p.VariableDecl
+    
+    # Decl -> FunctionDecl
+    @_('FunctionDecl')
+    def Decl(self, p):
+        return p.FunctionDecl
+    
+    # Decl -> stmt
+    @_('Stmt')
+    def Decl(self, p):
+        return p.Stmt
 
     # VariableDecl -> Variable;
     @_('Variable ";"')
@@ -108,13 +126,13 @@ class DLangParser(Parser):
          print('Found FunctionDecl')
          
     # Formals -> Variable+ | ε
-    @_('Variable+',
-        'ε')
+    @_('Variable "+"',
+        '"ε"')
     def Formals(self, p):
          return p
      
     # StmtBlock → { VariableDecl* Stmt* }
-    @_(' "{" VariableDecl* Stmt* "}" ')
+    @_(' "{" VariableDecl "*" Stmt "*" "}" ')
     def StmtBlock(self, p):
         print('Found StmtBlock')
         
@@ -157,9 +175,13 @@ class DLangParser(Parser):
         print('Found BreakStmt')
         
     # OutputStmt → Output ( Expr+, ) ;
-    @_('OUTPUT "(" Expr+ "," ")" ";"')
+    @_('OUTPUT "(" Expr "+" "," ")" ";"')
     def OutputStmt(self, p):
         print('Found OutputStmt')
+        
+    @_(' "-" Expr %prec UMINUS')
+    def NegExpr(self, p):
+        return -p.Expr
         
     # Expr → ident = Expr | Ident | Constant | Call | ( Expr ) | Expr+Expr | Expr -Expr | Expr *Expr | Expr/Expr | Expr % Expr | - Expr | Expr < Expr | Expr <= Expr | Expr > Expr | Expr>= Expr | Expr==Expr | Expr!=Expr | Expr && Expr | Expr || Expr | !Expr | InputInt ( ) | InputLine ( )
     @_('IDENTIFIER "=" Expr',
@@ -168,20 +190,20 @@ class DLangParser(Parser):
         'Call',
         ' "(" Expr ")" ',
         'Expr "+" Expr',
-        'Expr "-" Expr',
+        'NegExpr',
         'Expr "*" Expr',
         'Expr "/" Expr',
         'Expr "%" Expr',
         '- Expr',
         'Expr "<" Expr',
-        'Expr "<=" Expr',
+        'Expr LE Expr',
         'Expr ">" Expr',
-        'Expr ">=" Expr',
-        'Expr "==" Expr',
-        'Expr "!=" Expr',
-        'Expr "&&" Expr',
-        'Expr "||" Expr',
-        '! Expr',
+        'Expr GE Expr',
+        'Expr EQ Expr',
+        'Expr NE Expr',
+        'Expr AND Expr',
+        'Expr OR Expr',
+        '"!" Expr',
         'INPUTINT "(" ")"',
         'INPUTLINE "(" ")"')
     def Expr(self, p):
@@ -193,8 +215,8 @@ class DLangParser(Parser):
         print('Found Call')
         
     # Actuals → Expr+, |ε
-    @_('Expr+',
-        'ε')
+    @_('Expr "+"',
+        '"ε"')
     def Actuals(self, p):
         return p
     
