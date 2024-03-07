@@ -6,9 +6,12 @@ import sys
 from sly import Lexer, Parser
 
 class DLangLexer(Lexer):
+    # Initialize the lexer with a symbol table
+    def __init__(self):
+        self.IDENTIFIERs = { }
 
     # Define names of tokens
-    tokens ={LE, GE, EQ, NE, AND, OR, INT, DOUBLE, STRING, IDENTIFIER, NOTHING, INTK, DOUBLEK, BOOL, BOOLK, STRINGK, INTERFACE, NULL, FOR, WHILE, IF, ELSE, RETURN, BREAK, ARRAYINSTANCE, OUTPUT, INPUTINT, INPUTLINE}
+    tokens = {LE, GE, EQ, NE, AND, OR, INT, DOUBLE, STRING, IDENTIFIER, NOTHING, INTK, DOUBLEK, BOOL, BOOLK, STRINGK, INTERFACE, NULL, FOR, WHILE, IF, ELSE, RETURN, BREAK, ARRAYINSTANCE, OUTPUT, INPUTINT, INPUTLINE}
     
     # Single-character literals can be recognized without token names
     # If you use separate tokens for each literal, that is fine too
@@ -211,6 +214,12 @@ class DLangParser(Parser):
         except LookupError:
             print("Undefined IDENT '%s'" % p.IDENTIFIER)
             return 0
+        
+    def error(self, p):
+        if p:
+            print("Syntax error at '%s'" % p.value)
+        else:
+            print("Syntax error at EOF")
 
 
 if __name__ == '__main__':
