@@ -97,7 +97,112 @@ class DLangParser(Parser):
     @_('INTK', 'DOUBLEK', 'BOOLK', 'STRINGK')
     def Type(self, p):
         return p
-
+    
+    # FunctionDecl -> Type ident ( Formals ) StmtBlock | nothing ident ( Formals ) StmtBlock
+    @_('Type IDENTIFIER "(" Formals ")" StmtBlock',
+        'NOTHING IDENTIFIER "(" Formals ")" StmtBlock')
+    def FunctionDecl(self, p):
+         print('Found FunctionDecl')
+         
+    # Formals -> Variable+ | ε
+    @_('Variable+',
+        'ε')
+    def Formals(self, p):
+         return p
+     
+    # StmtBlock → { VariableDecl* Stmt* }
+    @_(' "{" VariableDecl* Stmt* "}" ')
+    def StmtBlock(self, p):
+        print('Found StmtBlock')
+        
+    # Stmt → <Expr> ; | IfStmt | WhileStmt | ForStmt | BreakStmt | ReturnStmt | OutputStmt | StmtBlock
+    @_('Expr ";"',
+        'IfStmt',
+        'WhileStmt',
+        'ForStmt',
+        'BreakStmt',
+        'ReturnStmt',
+        'OutputStmt',
+        'StmtBlock')
+    def Stmt(self, p):
+        print('Found Stmt')
+        
+    # IfStmt → if ( Expr ) Stmt <else Stmt>
+    @_('IF "(" Expr ")" Stmt ELSE Stmt',
+        'IF "(" Expr ")" Stmt')
+    def IfStmt(self, p):
+        print('Found IfStmt')
+        
+    # WhileStmt → while ( Expr ) Stmt
+    @_('WHILE "(" Expr ")" Stmt')
+    def WhileStmt(self, p):
+        print('Found WhileStmt')
+        
+    # ForStmt → for ( <Expr> ; Expr ; <Expr> ) Stmt
+    @_('FOR "(" Expr ";" Expr ";" Expr ")" Stmt')
+    def ForStmt(self, p):
+        print('Found ForStmt')
+        
+    # ReturnStmt → return <Expr> ;
+    @_('RETURN Expr ";"')
+    def ReturnStmt(self, p):
+        print('Found ReturnStmt')
+        
+    # BreakStmt → break ;
+    @_('BREAK ";"')
+    def BreakStmt(self, p):
+        print('Found BreakStmt')
+        
+    # OutputStmt → Output ( Expr+, ) ;
+    @_('OUTPUT "(" Expr+ "," ")" ";"')
+    def OutputStmt(self, p):
+        print('Found OutputStmt')
+        
+    # Expr → ident = Expr | Ident | Constant | Call | ( Expr ) | Expr+Expr | Expr -Expr | Expr *Expr | Expr/Expr | Expr % Expr | - Expr | Expr < Expr | Expr <= Expr | Expr > Expr | Expr>= Expr | Expr==Expr | Expr!=Expr | Expr && Expr | Expr || Expr | !Expr | InputInt ( ) | InputLine ( )
+    @_('IDENTIFIER "=" Expr',
+        'IDENTIFIER',
+        'Constant',
+        'Call',
+        ' "(" Expr ")" ',
+        'Expr "+" Expr',
+        'Expr "-" Expr',
+        'Expr "*" Expr',
+        'Expr "/" Expr',
+        'Expr "%" Expr',
+        '- Expr',
+        'Expr "<" Expr',
+        'Expr "<=" Expr',
+        'Expr ">" Expr',
+        'Expr ">=" Expr',
+        'Expr "==" Expr',
+        'Expr "!=" Expr',
+        'Expr "&&" Expr',
+        'Expr "||" Expr',
+        '! Expr',
+        'INPUTINT "(" ")"',
+        'INPUTLINE "(" ")"')
+    def Expr(self, p):
+        print('Found Expr')
+        
+    # Call → ident ( Actuals )
+    @_('IDENTIFIER "(" Actuals ")"')
+    def Call(self, p):
+        print('Found Call')
+        
+    # Actuals → Expr+, |ε
+    @_('Expr+',
+        'ε')
+    def Actuals(self, p):
+        return p
+    
+    # Constant → intConstant | doubleConstant | boolConstant | stringConstant | null
+    @_('INT',
+        'DOUBLE',
+        'BOOL',
+        'STRING',
+        'NULL')
+    def Constant(self, p):
+        return p
 
     @_('IDENTIFIER')
     def Decl(self, p):
